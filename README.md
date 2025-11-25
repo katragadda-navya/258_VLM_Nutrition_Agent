@@ -26,35 +26,20 @@ Upload an image, select a model, and instantly view nutrition results, FDC match
 🏗️ System Architecture
 
 FOOD_VLM_FASTAPI_REACT/
-
 │
-
 ├── backend/
-
 │   └── app/
-
 │       ├── main.py        # API endpoints (analyze, smoke tests, USDA calls)
-
 │       ├── vlm.py         # VLM integration (Ollama + OpenAI)
-
 │       └── fdc.py         # USDA FoodData Central wrapper
-
 │
-
 ├── frontend/
-
 │   ├── src/
-
 │   │   ├── App.jsx        # Main UI for upload + results dashboard
-
 │   │   └── lib/api.js     # fetchWithTimeout + form uploads
-
 │   └── package.json
-
 │
-
 ├── .env
-
 └── README.md
 
 
