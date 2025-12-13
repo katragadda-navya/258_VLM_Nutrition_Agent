@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from PIL import Image
 
+from .rag import rag_query, build_query_from_nutrition
 from .vlm import classify, _clean_query  # helper for sanitizing labels
 from .fdc import (
     FDCClient,
@@ -30,6 +31,13 @@ app.add_middleware(
 @app.get("/api/health")
 def health():
     return {"ok": True}
+
+@app.get("/api/debug_openai")
+def debug_openai():
+    return {
+        "OPENAI_API_KEY_present": bool(os.getenv("OPENAI_API_KEY")),
+        "OPENAI_BASE_URL": os.getenv("OPENAI_BASE_URL"),
+    }
 
 # --- VLM only smoke test (no USDA) ---
 @app.post("/api/vlm_smoke")
@@ -57,7 +65,7 @@ async def vlm_smoke(
             "requested_model": model,
         }
     except Exception as e:
-        raise HTTPException(status_code=502, detail=f"VLM error: {e}")
+        raise HTTPException(status_code=502, detail=f"VLM error: {repr(e)}")
 
 # --- USDA only smoke test (no VLM) ---
 @app.get("/api/usda_search")
@@ -69,7 +77,7 @@ def usda_search(q: str):
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"USDA error: {e}")
 
-# --- Full pipeline: VLM + USDA ---
+# --- Full pipeline: VLM + USDA + RAG ---
 @app.post("/api/analyze")
 async def analyze(
     image: UploadFile = File(...),
@@ -144,21 +152,36 @@ async def analyze(
     else:
         serving_used = f"{serving_amt} {serving_unit} (unscaled)"
 
-    # --- Step 4: Compose response ---
+    # --- Step 4: Tips (heuristic + RAG) ---
+    # Existing heuristic tips
+    base_tips = tips_from_profile(scaled)
+
+    # RAG-based guidance
+    try:
+        rag_q = build_query_from_nutrition(label, scaled)
+        rag_results = rag_query(rag_q, top_k=3)
+        rag_tips = [r["text"] for r in rag_results]
+    except Exception:
+        rag_results = []
+        rag_tips = []
+
+    combined_tips = base_tips + rag_tips
+
+    # --- Step 5: Compose response ---
     return {
         "label": label,
         "portion_g": portion_g,
         "confidence": conf,
         "serving_used": serving_used,
         "nutrition": scaled,
-        "tips": tips_from_profile(scaled),
+        "tips": combined_tips,
         "fdc_match": {
             "fdcId": fdc_id,
             "description": details.get("description"),
             "dataType": details.get("dataType"),
         },
         "timings_s": {"vlm": round(t_vlm, 3), "fdc": round(t_fdc, 3)},
-        "trace": {"vlm": trace0},
+        "trace": {"vlm": trace0, "rag": rag_results},
         "requested_backend": backend,
         "requested_model": model,
     }

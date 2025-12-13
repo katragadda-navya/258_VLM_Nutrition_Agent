@@ -121,14 +121,29 @@ def infer_with_ollama(image: Image.Image, model: Optional[str] = None):
 
 def infer_with_openai(image: Image.Image, model: str = "gpt-4o-mini"):
     from openai import OpenAI
-    client = OpenAI(base_url=os.getenv("OPENAI_BASE_URL") or None)
+    import os
+
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        # This will show up as a clear error if env isn't loaded
+        raise RuntimeError("OPENAI_API_KEY is not set in this process")
+
+    # Force official OpenAI endpoint, ignore OPENAI_BASE_URL env
+    client = OpenAI(
+        api_key=api_key,
+        base_url="https://api.openai.com/v1",
+    )
+
     prompt = 'Return STRICT JSON: {"label": <dish>, "portion_grams": <float>, "confidence": <0-1>}'
     res = client.chat.completions.create(
         model=model,
-        messages=[{"role": "user", "content": [
-            {"type": "text", "text": prompt},
-            {"type": "image_url", "image_url": {"url": _image_to_data_url(image)}},
-        ]}],
+        messages=[{
+            "role": "user",
+            "content": [
+                {"type": "text", "text": prompt},
+                {"type": "image_url", "image_url": {"url": _image_to_data_url(image)}},
+            ],
+        }],
         temperature=0.2,
         response_format={"type": "json_object"},
     )

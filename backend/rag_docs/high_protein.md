@@ -1,0 +1,1 @@
+High-protein meals with lean sources like chicken breast, fish, beans, tofu, and Greek yogurt help with satiety and muscle maintenance. Balance protein with fiber-rich carbs and healthy fats.
