@@ -3,6 +3,40 @@
 VitaLens is a full-stack Vision-Language Model (VLM) application that recognizes meals from images, estimates portion size, and retrieves grounded nutrition information using the USDA FoodData Central API.
 It integrates modern VLMs (Qwen-VL, LLaVA, MiniCPM, GPT-4o) with real-world data sources and exposes a clean web interface built with FastAPI and React/Vite.
 
+Team Members:
+Dinesh Buruboyina 
+Navya Katragadda 
+Urvashi Kohale 
+
+## Prereqs
+- Python 3.10+
+- Node 18+
+- (Recommended) **Ollama** running locally with a vision model:
+  ```bash
+  ollama pull qwen3-vl:8b
+  # or
+  ollama pull llava
+  # or 
+  ollama pull minicpm-v:8b
+  ```
+
+## Setup
+
+### Backend
+```bash
+cd backend
+cp .env.example .env   # put USDA_FDC_API_KEY
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+```
+
+### Frontend
+```bash
+cd frontend
+npm i
+npm run dev
+```
+
 🌟 Key Capabilities
 
 Vision-Language meal understanding
