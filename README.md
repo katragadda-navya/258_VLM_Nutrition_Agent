@@ -12,7 +12,6 @@ Personalized, human-readable guidance about the meal
 A React + Vite frontend with image upload, backend/model selection, and result visualization.
 
 1. High-level architecture
-'''text
 +------------------------+         +------------------------+
 |        Frontend        |         |        Backend         |
 |  React (Vite) SPA      |  ---->  | FastAPI                |
@@ -25,9 +24,10 @@ A React + Vite frontend with image upload, backend/model selection, and result v
                                                v
                            +-------------------+-------------------+
                            |     Vision–Language Models (VLM)     |
-                           |   (choose per request)               |
-                           |   - Ollama: qwen3-vl:8b, llava, ...  |
-                           |   - OpenAI: gpt-4o-mini, gpt-4o      |
+                           |        (chosen per request)           |
+                           |                                       |
+                           |   Ollama: qwen3-vl:8b, llava, ...     |
+                           |   OpenAI: gpt-4o-mini, gpt-4o, ...    |
                            +-------------------+-------------------+
                                                |
                                                v
@@ -35,11 +35,10 @@ A React + Vite frontend with image upload, backend/model selection, and result v
                          |        USDA FDC + RAG                    |
                          |                                          |
                          | - FDC search + details (macros)          |
-                         | - Macro summarization + scaling          |
+                         | - Macro summarization + portion scaling  |
                          | - Heuristic tips (fdc.py)                |
                          | - RAG tips from backend/rag_docs         |
                          +------------------------------------------+
-   '''
 
 3. Features
 
