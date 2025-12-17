@@ -12,6 +12,7 @@ Personalized, human-readable guidance about the meal
 A React + Vite frontend with image upload, backend/model selection, and result visualization.
 
 1. High-level architecture
+'''text
 +------------------------+         +------------------------+
 |        Frontend        |         |        Backend         |
 |  React (Vite) SPA      |  ---->  | FastAPI                |
@@ -38,9 +39,9 @@ A React + Vite frontend with image upload, backend/model selection, and result v
                          | - Heuristic tips (fdc.py)                |
                          | - RAG tips from backend/rag_docs         |
                          +------------------------------------------+
+   '''
 
-
-2. Features
+3. Features
 
 🔍 Food recognition from images
 VLM predicts a short dish label and portion size in grams.
