@@ -12,6 +12,7 @@ Personalized, human-readable guidance about the meal
 A React + Vite frontend with image upload, backend/model selection, and result visualization.
 
 1. High-level architecture
+```text
 +------------------------+         +------------------------+
 |        Frontend        |         |        Backend         |
 |  React (Vite) SPA      |  ---->  | FastAPI                |
@@ -39,7 +40,7 @@ A React + Vite frontend with image upload, backend/model selection, and result v
                          | - Heuristic tips (fdc.py)                |
                          | - RAG tips from backend/rag_docs         |
                          +------------------------------------------+
-
+```
 3. Features
 
 🔍 Food recognition from images
@@ -69,7 +70,7 @@ Inspect prediction, macros, FDC match, timings, and all tips.
 Toggle “Show raw” to see the full JSON returned by the backend.
 
 3. Repository layout
-
+```text
 258_VLM_Nutrition_Agent/
 ├── backend/
 │   ├── app/
@@ -86,7 +87,7 @@ Toggle “Show raw” to see the full JSON returned by the backend.
     │   └── lib/api.js       # API client (calls /api/analyze)
     ├── package.json
     └── vite.config.*        # Vite config
-
+```
 4. Multi-model evaluation (Food-101)
 
 To compare different VLM backends on a standard dataset, use
