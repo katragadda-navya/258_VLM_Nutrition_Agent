@@ -147,13 +147,20 @@ def infer_with_openai(image: Image.Image, model: str = "gpt-4o-mini"):
         temperature=0.2,
         response_format={"type": "json_object"},
     )
-    text = res.choices[0].message.content
-    j = json.loads(text)
+    
+    # Safely extract content
+    text = ""
+    if res and res.choices and len(res.choices) > 0:
+        content = res.choices[0].message.content
+        text = (content or "").strip()
+    
+    # Use _extract_from_text for consistency with Ollama
+    label, portion, conf = _extract_from_text(text)
     return (
-        str(j.get("label", "unknown")),
-        float(j.get("portion_grams", 250.0)),
-        float(j.get("confidence", 0.7)),
-        {"backend": "openai", "raw": res.model_dump()},
+        label,
+        portion,
+        conf,
+        {"backend": "openai", "raw": res.model_dump() if res else {}},
     )
 
 def classify(image: Image.Image, backend: str = "ollama", model: Optional[str] = None):

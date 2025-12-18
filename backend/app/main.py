@@ -102,6 +102,7 @@ async def analyze(
     safe_query = _clean_query(label)
 
     # --- Step 2: USDA lookup ---
+    client = None
     try:
         client = FDCClient()
         t1 = time.time()
@@ -110,6 +111,7 @@ async def analyze(
         # retry with fallback query (first token)
         fallback = safe_query.split()[0] if safe_query.split() else safe_query
         try:
+            client = FDCClient()
             search = client.search(fallback, page_size=10)
         except Exception as e2:
             return JSONResponse({"error": f"USDA lookup failed: {e2}"}, status_code=502)
